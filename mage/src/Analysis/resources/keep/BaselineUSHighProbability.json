@@ -1,0 +1,76 @@
+{
+    "name": "US High / Longon High Baseline Probability",
+    "description": "The probability that given any day, US trades higher than London at any point",
+    "dataSpecifications": [
+        {
+            "symbol": "$1",
+            "source": "LocalFiles",
+            "marketType": "FUTURE",
+            "timeSeries": "1h",
+            "indicators": [
+                {
+                    "name": "sbh",
+                    "identifier": "SBH",
+                    "config": { 
+                        "pre_session": [0,5],
+                        "session_a": [6,11],
+                        "session_b": [12,20]
+                    }
+                }
+            ]
+        }
+    ],
+    "analysisSpecification": {
+        "assessOn": {
+            "var1": {
+                "symbol": "$1",
+                "var": "timestamp.hour",
+                "lookahead": 0
+            },
+            "op": "eq",
+            "var2": {
+                "symbol": null,
+                "var": 20,
+                "lookahead": 0
+            }
+        },
+        "predict": {
+            "var1": {
+                "symbol": "$1",
+                "var": "SBH.bsh",
+            "lookahead": 0
+            },
+            "op": "gt",
+            "var2": {
+                "symbol": "$1",
+                "var": "SBH.ash",
+                "lookahead": 0
+            }
+        }
+    },
+    "outputSpecification": {
+        "format": "csv",
+        "variables": [
+            {
+                "symbol": "$1",
+                "var": "timestamp",
+                "lookahead": 0
+            },
+            {
+                "symbol": "$1",
+                "var": "SBH.psh",
+                "lookahead": 0
+            },
+            {
+                "symbol": "$1",
+                "var": "SBH.ash",
+                "lookahead": 0
+            },
+            {
+                "symbol": "$1",
+                "var": "SBH.bsh",
+                "lookahead": 0
+            }
+        ]
+    }
+}

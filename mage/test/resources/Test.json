@@ -1,0 +1,104 @@
+{
+    "name": "Test1",
+    "description": "Test1",
+    "dataSpecifications": [
+        {
+            "symbol": "$1",
+            "source": "LocalFiles",
+            "marketType": "FUTURE",
+            "timeSeries": "1h",
+            "indicators": [
+                {
+                    "name": "rsi",
+                    "identifier": "RSI",
+                    "config": { 
+                        "timeperiod": 12
+                    }
+                }
+            ]
+        }
+    ],
+    "signals": [
+        {
+            "identifier": "RSI_ABOVE_50",
+            "criteria": {
+                "var1": {
+                    "symbol": "$1",
+                    "var": "RSI"
+                },
+                "op": "gt",
+                "var2": {
+                    "symbol": null,
+                    "var": 50
+                }
+            }
+        }
+    ],
+    "actions": [
+        {
+            "action": {
+                "do": "MARKET_BUY"
+            },
+            "size": {
+                "size": 10,
+                "type": "STANDARD"
+            },
+            "symbol": "$1",
+            "criteria": {
+                "var1": {
+                    "symbol": "$1",
+                    "var": "timestamp.hour",
+                    "offset": 0
+                },
+                "op": "eq",
+                "var2": {
+                    "symbol": null,
+                    "var": 12,
+                    "offset": 0
+                },
+                "and": [{
+                    "var1": {
+                        "symbol": null,
+                        "var": "RSI_BULLISH_TREND",
+                        "offset": 0
+                    },
+                    "op": "eq",
+                    "var2": {
+                        "symbol": null,
+                        "var": true,
+                        "offset": 0
+                    }                   
+                }]
+            },
+            "followUpActions": [{
+                "action": {
+                    "do": "SIGNAL_RESET",
+                    "signal": "RSI_BULLISH_TREND"
+                }
+            }]
+        },
+        {
+            "action": {
+                "do": "MARKET_SELL"
+            },
+            "size": {
+                "size": 1.0,
+                "type": "PERCENT"
+            },
+            "symbol": "$1",
+            "criteria": {
+                "var1": {
+                    "symbol": "$1",
+                    "var": "timestamp.hour",
+                    "offset": 0
+                },
+                "op": "eq",
+                "var2": {
+                    "symbol": null,
+                    "var": 20,
+                    "offset": 0
+                }
+            }
+        }
+    ]
+}

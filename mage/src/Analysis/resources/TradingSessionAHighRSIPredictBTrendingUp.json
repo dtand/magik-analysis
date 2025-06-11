@@ -1,0 +1,210 @@
+{
+    "name": "US Session Predict Trending Up",
+    "description": "Given that Session A has an increasing RSI > X, what's the probability that Session B Trends Up?",
+    "dataSpecifications": [
+        {
+            "symbol": "$1",
+            "source": "LocalFiles",
+            "marketType": "FUTURE",
+            "timeSeries": "1h",
+            "indicators": [
+                {
+                    "name": "sbh",
+                    "identifier": "SBH",
+                    "config": { 
+                        "pre_session": [0,5],
+                        "session_a": [6,12],
+                        "session_b": [13,20]
+                    }
+                },
+                {
+                    "name": "sbl",
+                    "identifier": "SBL",
+                    "config": { 
+                        "pre_session": [0,5],
+                        "session_a": [6,12],
+                        "session_b": [13,20]
+                    }
+                },
+                {
+                    "name": "rsi",
+                    "identifier": "RSI",
+                    "config": { 
+                        "timeperiod": 12
+                    }
+                },
+                {
+                    "name": "delta",
+                    "identifier": "DELTA_RSI",
+                    "config": {
+                        "indicator": "RSI",
+                        "d1": -8,
+                        "d2": -14
+                    }
+                },
+                {
+                    "name": "sboth",
+                    "identifier": "SBOTH",
+                    "dependsOn": "SBH",
+                    "config": { 
+                        "pre_session": [0,5],
+                        "session_a": [6,12],
+                        "session_b": [13,20]
+                    }
+                },
+                {
+                    "name": "vwap",
+                    "identifier": "VWAP",
+                    "config": {
+                        "timeperiod": 24
+                    }
+                },
+                {
+                    "name": "delta",
+                    "identifier": "DELTA_VWAP",
+                    "config": {
+                        "indicator": "VWAP",
+                        "d1": -8,
+                        "d2": -14
+                    }
+                }
+            ]
+        }
+    ],
+    "analysisSpecification": {
+        "assessOn": {
+            "var1": {
+                "symbol": "$1",
+                "var": "timestamp.hour",
+                "lookahead": 0
+            },
+            "op": "eq",
+            "var2": {
+                "symbol": null,
+                "var": 20,
+                "lookahead": 0
+            }
+        },
+        "criteria": {
+            "var1": {
+                "symbol": "$1",
+                "var": "DELTA_RSI",
+                "lookahead": 0
+            },
+            "op": "gt",
+            "var2": {
+                "symbol": null,
+                "var": 0,
+                "lookahead": 0
+            },
+            "and": [{
+                "var1": {
+                    "symbol": "$1",
+                    "var": "RSI",
+                    "lookahead": -8
+                },
+                "op": "gt",
+                "var2": {
+                    "symbol": null,
+                    "var": 59,
+                    "lookahead": 0
+                }
+            },{
+                "var1": {
+                    "symbol": "$1",
+                    "var": "DELTA_VWAP",
+                    "lookahead": 0
+                },
+                "op": "gt",
+                "var2": {
+                    "symbol": null,
+                    "var": 0,
+                    "lookahead": 0
+                }
+            }
+            
+            ]
+        },
+        "predict": {
+            "var1": {
+                "symbol": "$1",
+                "var": "SBH.bsh",
+                "lookahead": 0
+            },
+            "op": "gt",
+            "var2": {
+                "symbol": "$1",
+                "var": "SBH.ash",
+                "lookahead": 0
+            },
+            "and": [{
+                "var1": {
+                    "symbol": "$1",
+                    "var": "SBL.bsl",
+                    "lookahead": 0
+                },
+                "op": "gt",
+                "var2": {
+                    "symbol": "$1",
+                    "var": "SBL.asl",
+                    "lookahead": 0
+                }  
+            }]
+        }
+    },
+    "outputSpecification": {
+        "format": "csv",
+        "variables": [
+            {
+                "symbol": "$1",
+                "var": "timestamp",
+                "lookahead": 0
+            },
+            {
+                "symbol": "$1",
+                "var": "SBH.ash",
+                "lookahead": 0
+            },
+            {
+                "symbol": "$1",
+                "var": "SBH.bsh",
+                "lookahead": 0
+            },
+            {
+                "symbol": "$1",
+                "var": "SBL.asl",
+                "lookahead": 0
+            },
+            {
+                "symbol": "$1",
+                "var": "SBL.bsl",
+                "lookahead": 0
+            },
+            {
+                "symbol": "$1",
+                "var": "RSI",
+                "lookahead": 0
+            },
+            {
+                "symbol": "$1",
+                "var": "RSI",
+                "lookahead": -9
+            },
+            {
+                "symbol": "$1",
+                "var": "RSI",
+                "lookahead": -14
+            },
+            {
+                "symbol": "$1",
+                "var": "DELTA_RSI",
+                "lookahead": 0
+            },
+            {
+                "symbol": "$1",
+                "var": "SBOTH.both",
+                "lookahead": 0
+            }   
+        ]
+    }
+}

@@ -1,0 +1,66 @@
+{
+    "name": "Trending MA Cross Buy The Dip",
+    "description": "An asset is considered 'trending up' if the smaller SMA is greater than the larger SMA.  While an asset is trending up and price trades below the lower SMA, perform a buy",
+    "dataSpecifications": [
+        {
+            "symbol": "$1",
+            "source": "LocalFiles",
+            "marketType": "SPOT",
+            "timeSeries": "DAILY",
+            "indicators": [
+                {
+                    "name": "sma",
+                    "identifier": "SMA1",
+                    "config": { 
+                        "timeperiod": 50
+                    }
+                },
+                {
+                    "name": "sma",
+                    "identifier": "SMA2",
+                    "config": { 
+                        "timeperiod": 200
+                    }        
+                }
+            ]
+        }
+    ],
+    "actions": [
+        {
+            "action": {
+                "do": "BUY",
+                "size": 1.0,
+                "when": "CLOSE",
+                "symbol": "$1"
+            },
+            "criteria": {
+                "var1": "$1->SMA1",
+                "op": "gt",
+                "var2": "$1->SMA2",
+                "and": [{
+                    "var1": "$1->low",
+                    "op": "lt",
+                    "var2": "$1->SMA1"                   
+                }]
+            }    
+        },
+        {
+            "action": {
+                "do": "SELL",
+                "size": 1.0,
+                "when": "CLOSE",
+                "symbol": "$1"
+            },
+            "criteria": {
+                "var1": "$1->SMA1",
+                "op": "lt",
+                "var2": "$1->SMA2",
+                "or": [{
+                    "var1": "open_pl",
+                    "op": "gt",
+                    "var2": 0.1
+                }]
+            }
+        }
+    ]
+}

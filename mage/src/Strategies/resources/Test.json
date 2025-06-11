@@ -1,0 +1,190 @@
+{
+    "name": "Delta RSI Threshold",
+    "description": "If the RSI value increased during London trading hours, then long the US open",
+    "dataSpecifications": [
+        {
+            "symbol": "$1",
+            "source": "LocalFiles",
+            "marketType": "FUTURE",
+            "timeSeries": "1h",
+            "indicators": [
+                {
+                    "name": "sbh",
+                    "identifier": "SBH",
+                    "config": { 
+                        "pre_session": [0,5],
+                        "session_a": [6,12],
+                        "session_b": [13,20]
+                    }
+                },
+                {
+                    "name": "sbl",
+                    "identifier": "SBL",
+                    "config": { 
+                        "pre_session": [0,5],
+                        "session_a": [6,12],
+                        "session_b": [13,20]
+                    }
+                },
+                {
+                    "name": "rsi",
+                    "identifier": "RSI",
+                    "config": { 
+                        "timeperiod": 12
+                    }
+                },
+                {
+                    "name": "delta",
+                    "identifier": "DELTA_RSI",
+                    "config": {
+                        "indicator": "RSI",
+                        "d1": 0,
+                        "d2": -6
+                    }
+                },
+                {
+                    "name": "var_change_pct",
+                    "identifier": "CTAH",
+                    "config": {
+                        "varX": "close",
+                        "varY": "SBH.ash"
+                    } 
+                }
+            ]
+        }
+    ],
+    "signals": [
+        {
+            "identifier": "RSI_BULLISH_TREND",
+            "criteria": {
+                "var1": {
+                    "symbol": "$1",
+                    "var": "DELTA_RSI",
+                    "lookahead": 0
+                },
+                "op": "gt",
+                "var2": {
+                    "symbol": null,
+                    "var": 0,
+                    "lookahead": 0
+                },
+                "and": [{
+                    "var1": {
+                        "symbol": "$1",
+                        "var": "RSI",
+                        "lookahead": 0
+                    },
+                    "op": "gteq",
+                    "var2": {
+                        "symbol": null,
+                        "var": 58,
+                        "lookahead": 0
+                    }
+                }, {
+                    "var1": {
+                        "symbol": "$1",
+                        "var": "RSI",
+                        "lookahead": 0
+                    },
+                    "op": "lt",
+                    "var2": {
+                        "symbol": null,
+                        "var": 80,
+                        "lookahead": 0
+                    }
+                }, {
+                    "var1": {
+                        "symbol": "$1",
+                        "var": "timestamp.hour",
+                        "lookahead": 0
+                    },
+                    "op": "eq",
+                    "var2": {
+                        "symbol": null,
+                        "var": 12,
+                        "lookahead": 0
+                    }
+                }]
+            } 
+        }
+
+    ],
+    "actions": [
+        {
+            "action": {
+                "do": "MARKET_BUY",
+                "size": {
+                    "size": 10,
+                    "type": "STANDARD"
+                },
+                "at": {
+                    "symbol": "$1",
+                    "var": "open",
+                    "lookahead": 1
+                },
+                "symbol": "$1"
+            },
+            "criteria": {
+                "var1": {
+                    "symbol": "$1",
+                    "var": "timestamp.hour",
+                    "lookahead": 0
+                },
+                "op": "eq",
+                "var2": {
+                    "symbol": null,
+                    "var": 12,
+                    "lookahead": 0
+                },
+                "and": [{
+                    "var1": {
+                        "symbol": null,
+                        "var": "RSI_BULLISH_TREND",
+                        "lookahead": 0
+                    },
+                    "op": "eq",
+                    "var2": {
+                        "symbol": null,
+                        "var": true,
+                        "lookahead": 0
+                    }                   
+                }]
+            },
+            "followUpActions": [{
+                "do": "CLEAR_SIGNAL",
+                "at": {
+                    "symbol": null,
+                    "var": "RSI_BULLISH_TREND",
+                    "lookahead": null
+                },
+                "size": null,
+                "symbol": null
+            }]
+        },
+        {
+            "action": {
+                "do": "MARKET_SELL",
+                "size": 1,
+                "at": {
+                    "symbol": "$1",
+                    "var": "close",
+                    "lookahead": 0
+                },
+                "symbol": "$1"
+            },
+            "criteria": {
+                "var1": {
+                    "symbol": "$1",
+                    "var": "timestamp.hour",
+                    "lookahead": 0
+                },
+                "op": "eq",
+                "var2": {
+                    "symbol": null,
+                    "var": 20,
+                    "lookahead": 0
+                }
+            }
+        }
+    ]
+}

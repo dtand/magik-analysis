@@ -1,0 +1,112 @@
+{
+    "name": "Test",
+    "description": "Test",
+    "dataSpecifications": [
+        {
+            "symbol": "BTC.FUT",
+            "source": "LocalFiles",
+            "marketType": "FUTURE",
+            "timeSeries": "1h",
+            "indicators": [
+                {
+                    "name": "sbh",
+                    "identifier": "SBH",
+                    "config": { 
+                        "pre_session": [0,5],
+                        "session_a": [6,11],
+                        "session_b": [12,20]
+                    }
+                }
+            ]
+        }
+    ],
+    "analysisSpecification": {
+        "assessOn": {
+            "var1": {
+                "symbol": "$1",
+                "var": "timestamp.hour",
+                "lookahead": 0
+            },
+            "op": "eq",
+            "var2": {
+                "symbol": null,
+                "var": 12,
+                "lookahead": 0
+            }
+        },
+        "criteria": {
+            "var1": {
+                "symbol": "$1",
+                "var": "high",
+                "lookahead": 0
+            },
+            "op": "gt",
+            "var2": {
+                "symbol": "$1",
+                "var": "SBH.ash",
+                "lookahead": 0
+            },
+            "and": [{
+                "var1": {
+                    "symbol": "$1",
+                    "var": "SBH.ash",
+                    "lookahead": 0
+                },
+                "op": "gt",
+                "var2": {
+                    "symbol": "$1",
+                    "var": "SBH.psh",
+                    "lookahead": 0
+                }                
+            }]
+        },
+        "predict": {
+            "var1": {
+                "symbol": "BTC.FUT",
+                "var": "low",
+                "lookahead": 1
+            },
+            "op": "lt",
+            "var2": {
+                "symbol": "BTC.FUT",
+                "var": "low",
+                "lookahead": 0
+            }
+        }
+    },
+    "outputSpecification": {
+        "format": "csv",
+        "variables": [
+            {
+                "symbol": "$1",
+                "var": "timestamp",
+                "lookahead": 0
+            },
+            {
+                "symbol": "$1",
+                "var": "SBH.psh",
+                "lookahead": 0
+            },
+            {
+                "symbol": "$1",
+                "var": "SBH.ash",
+                "lookahead": 0
+            },
+            {
+                "symbol": "$1",
+                "var": "high",
+                "lookahead": 0
+            },
+            {
+                "symbol": "$1",
+                "var": "low",
+                "lookahead": 0
+            },
+            {
+                "symbol": "$1",
+                "var": "low",
+                "lookahead": 1
+            }  
+        ]
+    }
+}

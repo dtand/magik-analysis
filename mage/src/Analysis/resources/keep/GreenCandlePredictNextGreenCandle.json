@@ -1,0 +1,41 @@
+{
+    "name": "Prior Candle Green Next Candle Green",
+    "description": "Analyze the probability of the next ohlcv closing green, given that the prior candle is green",
+    "dataSpecifications": [
+        {
+            "symbol": "$1",
+            "source": "LocalFiles",
+            "marketType": "FUTURE",
+            "timeSeries": "1h",
+            "indicators": []
+        }
+    ],
+    "analysisSpecification": {
+        "criteria": {
+            "var1": {
+                "symbol": "$1",
+                "var": "open",
+                "lookahead": 0
+            },
+            "op": "gt",
+            "var2": {
+                "symbol": "$1",
+                "var": "close",
+                "lookahead": 0
+            }
+        },
+        "predict": {
+            "var1": {
+                "symbol": "$1",
+                "var": "open",
+                "lookahead": 1
+            },
+            "op": "gt",
+            "var2": {
+                "symbol": "$1",
+                "var": "close",
+                "lookahead": 1
+            }
+        }
+    }
+}

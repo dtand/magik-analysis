@@ -1,0 +1,224 @@
+{
+    "name": "Delta RSI Threshold",
+    "description": "If the RSI value increased during London trading hours, then long the US open",
+    "dataSpecifications": [
+        {
+            "symbol": "6B.FUT",
+            "source": "LocalFiles",
+            "marketType": "FUTURE",
+            "timeSeries": "1h",
+            "indicators": [
+                {
+                    "name": "sbh",
+                    "identifier": "SBH",
+                    "config": { 
+                        "pre_session": [0,5],
+                        "session_a": [6,12],
+                        "session_b": [13,20]
+                    }
+                },
+                {
+                    "name": "rsi",
+                    "identifier": "RSI",
+                    "config": { 
+                        "real": "close",
+                        "timeperiod": 12
+                    }
+                },
+                {
+                    "name": "delta",
+                    "identifier": "DELTA_RSI",
+                    "config": {
+                        "indicator": "RSI",
+                        "d1": 0,
+                        "d2": -6
+                    }
+                },
+                {
+                    "name": "var_change_pct",
+                    "identifier": "CTAH",
+                    "config": {
+                        "varX": "close",
+                        "varY": "SBH.ash"
+                    } 
+                },
+                {
+                    "name": "sma",
+                    "identifier": "SMA_24",
+                    "config": {
+                        "real": "close",
+                        "timeperiod": 120
+                    } 
+                }
+            ]
+        }
+    ],
+    "signals": [
+        {
+            "identifier": "RSI_BULLISH_TREND",
+            "criteria": {
+                "var1": {
+                    "symbol": "6B.FUT",
+                    "var": "DELTA_RSI",
+                    "offset": 0
+                },
+                "op": "gt",
+                "var2": {
+                    "symbol": null,
+                    "var": 0,
+                    "offset": 0
+                },
+                "and": [{
+                    "var1": {
+                        "symbol": "6B.FUT",
+                        "var": "RSI",
+                        "offset": 0
+                    },
+                    "op": "gteq",
+                    "var2": {
+                        "symbol": null,
+                        "var": 57,
+                        "offset": 0
+                    }
+                }, {
+                    "var1": {
+                        "symbol": "6B.FUT",
+                        "var": "RSI",
+                        "offset": 0
+                    },
+                    "op": "lt",
+                    "var2": {
+                        "symbol": null,
+                        "var": 80,
+                        "offset": 0
+                    }
+                }, {
+                    "var1": {
+                        "symbol": "6B.FUT",
+                        "var": "timestamp.hour",
+                        "offset": 0
+                    },
+                    "op": "eq",
+                    "var2": {
+                        "symbol": null,
+                        "var": 12,
+                        "offset": 0
+                    }
+                }]
+            } 
+        }
+
+    ],
+    "actions": [
+        {
+            "action": {
+                "do": "MARKET_BUY"
+            },
+            "size": {
+                "size": 10,
+                "type": "STANDARD",
+                "transform": {
+                    "method": "rsi_inverse_range",
+                    "configuration": {
+                        "symbol": "6B.FUT",
+                        "variables": ["RSI"],
+                        "rsiRange": [57, 80]
+                    }
+                }
+            },
+            "symbol": "6B.FUT",
+            "criteria": {
+                "var1": {
+                    "symbol": "6B.FUT",
+                    "var": "timestamp.hour",
+                    "offset": 0
+                },
+                "op": "eq",
+                "var2": {
+                    "symbol": null,
+                    "var": 12,
+                    "offset": 0
+                },
+                "and": [{
+                    "var1": {
+                        "symbol": null,
+                        "var": "RSI_BULLISH_TREND",
+                        "offset": 0
+                    },
+                    "op": "eq",
+                    "var2": {
+                        "symbol": null,
+                        "var": true,
+                        "offset": 0
+                    }                   
+                }, {
+                    "var1": {
+                        "symbol": "6B.FUT",
+                        "var": "position",
+                        "offset": 0
+                    },
+                    "op": "eq",
+                    "var2": {
+                        "symbol": null,
+                        "var": false,
+                        "offset": 0
+                    }
+                }, {
+                    "var1": {
+                        "symbol": "6B.FUT",
+                        "var": "close",
+                        "offset": 0
+                    },
+                    "op": "gt",
+                    "var2": {
+                        "symbol": "6B.FUT",
+                        "var": "SMA_24",
+                        "offset": 0
+                    }                      
+                }]
+            },
+            "followUpActions": [{
+                "action": {
+                    "do": "SIGNAL_RESET",
+                    "signal": "RSI_BULLISH_TREND"
+                }
+            }]
+        },
+        {
+            "action": {
+                "do": "MARKET_SELL"
+            },
+            "size": {
+                "size": 1.0,
+                "type": "PERCENT"
+            },
+            "symbol": "6B.FUT",
+            "criteria": {
+                "var1": {
+                    "symbol": "6B.FUT",
+                    "var": "timestamp.hour",
+                    "offset": 0
+                },
+                "op": "eq",
+                "var2": {
+                    "symbol": null,
+                    "var": 20,
+                    "offset": 0
+                },
+                "and": [{
+                    "var1": {
+                        "symbol": "6B.FUT",
+                        "var": "position.quantity",
+                        "offset": 0
+                    },
+                    "op": "gt",
+                    "var2": {
+                        "symbol": null,
+                        "var": 0,
+                        "offset": 0
+                    }
+                }]
+            }
+        }
+    ]
+}

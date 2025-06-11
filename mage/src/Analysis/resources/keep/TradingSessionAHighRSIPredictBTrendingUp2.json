@@ -1,0 +1,170 @@
+{
+    "name": "US Session Predict Trending Up",
+    "description": "Given that Session A has an increasing RSI > X, what's the probability that Session B Trends Up?",
+    "dataSpecifications": [
+        {
+            "symbol": "$1",
+            "source": "LocalFiles",
+            "marketType": "FUTURE",
+            "timeSeries": "1h",
+            "indicators": [
+                {
+                    "name": "sbh",
+                    "identifier": "SBH",
+                    "config": { 
+                        "pre_session": [0,5],
+                        "session_a": [6,12],
+                        "session_b": [13,20]
+                    }
+                },
+                {
+                    "name": "sbl",
+                    "identifier": "SBL",
+                    "config": { 
+                        "pre_session": [0,5],
+                        "session_a": [6,12],
+                        "session_b": [13,20]
+                    }
+                },
+                {
+                    "name": "adx",
+                    "identifier": "ADX",
+                    "config": { 
+                        "timeperiod": 24
+                    }
+                },
+                {
+                    "name": "minus_di",
+                    "identifier": "MIN_D",
+                    "config": { 
+                        "timeperiod": 24
+                    }
+                },
+                {
+                    "name": "plus_di",
+                    "identifier": "PLUS_D",
+                    "config": { 
+                        "timeperiod": 24
+                    }
+                }
+            ]
+        }
+    ],
+    "analysisSpecification": {
+        "assessOn": {
+            "var1": {
+                "symbol": "$1",
+                "var": "timestamp.hour",
+                "lookahead": 0
+            },
+            "op": "eq",
+            "var2": {
+                "symbol": null,
+                "var": 20,
+                "lookahead": 0
+            }
+        },
+        "criteria": {
+            "var1": {
+                "symbol": "$1",
+                "var": "PLUS_D",
+                "lookahead": -15
+            },
+            "op": "lt",
+            "var2": {
+                "symbol": "$1",
+                "var": "MIN_D",
+                "lookahead": -15
+            },
+            "and": [
+            {
+                "var1": {
+                    "symbol": "$1",
+                    "var": "PLUS_D",
+                    "lookahead": -8
+                },
+                "op": "gt",
+                "var2": {
+                    "symbol": "$1",
+                    "var": "MIN_D",
+                    "lookahead": -8
+                }
+            },
+            {
+                "var1": {
+                    "symbol": "$1",
+                    "var": "ADX",
+                    "lookahead": -8
+                },
+                "op": "gt",
+                "var2": {
+                    "symbol": null,
+                    "var": 25,
+                    "lookahead": -8
+                }
+            }
+        ]
+        },
+        "predict": {
+            "var1": {
+                "symbol": "$1",
+                "var": "SBH.bsh",
+                "lookahead": 0
+            },
+            "op": "gt",
+            "var2": {
+                "symbol": "$1",
+                "var": "SBH.ash",
+                "lookahead": 0
+            },
+            "and": [{
+                "var1": {
+                    "symbol": "$1",
+                    "var": "SBL.bsl",
+                    "lookahead": 0
+                },
+                "op": "gt",
+                "var2": {
+                    "symbol": "$1",
+                    "var": "SBL.asl",
+                    "lookahead": 0
+                }  
+            }]
+        }
+    },
+    "outputSpecification": {
+        "format": "csv",
+        "variables": [
+            {
+                "symbol": "$1",
+                "var": "timestamp",
+                "lookahead": 0
+            },
+            {
+                "symbol": "$1",
+                "var": "SBH.psh",
+                "lookahead": 0
+            },
+            {
+                "symbol": "$1",
+                "var": "SBH.ash",
+                "lookahead": 0
+            },
+            {
+                "symbol": "$1",
+                "var": "SBH.bsh",
+                "lookahead": 0
+            },
+            {
+                "symbol": "$1",
+                "var": "SBL.asl",
+                "lookahead": 0
+            },
+            {
+                "symbol": "$1",
+                "var": "SBL.bsl",
+                "lookahead": 0
+            }
+        ]
+    }
+}

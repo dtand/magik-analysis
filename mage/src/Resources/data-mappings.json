@@ -1,0 +1,19 @@
+{
+    "LocalFiles": {
+        "open": "open",
+        "high": "high",
+        "low": "low",
+        "close": "close",
+        "volume": "volume",
+        "timestamp": "timestamp"
+    },
+
+    "AlphaVantage": {
+        "open": "1. open",
+        "high": "2. high",
+        "low": "3. low",
+        "close": "4. close",
+        "volume": "5. volume",
+        "timestamp": "timestamp"
+    }
+}

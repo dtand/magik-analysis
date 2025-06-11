@@ -1,0 +1,143 @@
+{
+    "name": "Trying stuff",
+    "description": "Trying stuff",
+    "dataSpecifications": [
+        {
+            "symbol": "$1",
+            "source": "LocalFiles",
+            "marketType": "FUTURE",
+            "timeSeries": "1h",
+            "indicators": [
+                {
+                    "name": "sbh",
+                    "identifier": "SBH",
+                    "config": { 
+                        "pre_session": [0,5],
+                        "session_a": [6,11],
+                        "session_b": [12,20]
+                    }
+                },
+                {
+                    "name": "sboth",
+                    "identifier": "SBOTH",
+                    "dependsOn": "SBH",
+                    "config": { 
+                        "pre_session": [0,5],
+                        "session_a": [6,11],
+                        "session_b": [12,20]
+                    }
+                },
+                {
+                    "name": "sbotc",
+                    "identifier": "SBOTC",
+                    "config": { 
+                        "pre_session": [0,5],
+                        "session_a": [6,11],
+                        "session_b": [12,20]
+                    }
+                },
+                {
+                    "name": "rsi",
+                    "identifier": "RSI",
+                    "config": { 
+                        "timeperiod": 12
+                    }
+                }
+            ]
+        }
+    ],
+    "analysisSpecification": {
+        "assessOn": {
+            "var1": {
+                "symbol": "$1",
+                "var": "timestamp.hour",
+                "lookahead": 0
+            },
+            "op": "eq",
+            "var2": {
+                "symbol": null,
+                "var": 20,
+                "lookahead": 0
+            }
+        },
+        "criteria": {
+            "var1": {
+                "symbol": "$1",
+                "var": "SBH.psh",
+                "lookahead": 0
+            },
+            "op": "lt",
+            "var2": {
+                "symbol": "$1",
+                "var": "SBH.ash",
+                "lookahead": 0
+            },
+            "and": [{
+                "var1": {
+                    "symbol": "$1",
+                    "var": "RSI",
+                    "lookahead": -9
+                },
+                "op": "lt",
+                "var2": {
+                    "symbol": null,
+                    "var": 20,
+                    "lookahead": 0
+                } 
+            }]
+        },
+        "predict": {
+            "var1": {
+                "symbol": "$1",
+                "var": "SBH.bsh",
+                "lookahead": 0
+            },
+            "op": "gt",
+            "var2": {
+                "symbol": "$1",
+                "var": "SBH.ash",
+                "lookahead": 0
+            }
+        }
+    },
+    "outputSpecification": {
+        "format": "csv",
+        "variables": [
+            {
+                "symbol": "$1",
+                "var": "timestamp",
+                "lookahead": 0
+            },
+            {
+                "symbol": "$1",
+                "var": "SBH.psh",
+                "lookahead": 0
+            },
+            {
+                "symbol": "$1",
+                "var": "SBH.ash",
+                "lookahead": 0
+            },
+            {
+                "symbol": "$1",
+                "var": "SBH.bsh",
+                "lookahead": 0
+            },
+            {
+                "symbol": "$1",
+                "var": "RSI",
+                "lookahead": -9
+            },
+            {
+                "symbol": "$1",
+                "var": "SBOTH.both",
+                "lookahead": 0                
+            },
+            {
+                "symbol": "$1",
+                "var": "SBOTC.botc",
+                "lookahead": 0                
+            }
+        ]
+    }
+}
