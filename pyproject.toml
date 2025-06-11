@@ -1,0 +1,14 @@
+[project]
+name = "mage"
+version = "1.0.0"
+description = "Massive Gains Analysis Engine - performs bulk backtesting and analysis of trading strategies."
+dependencies = [
+    "pytest >= 8.2.2",
+    "pytest-mock >= 3.14.0",
+    "mock >= 5.1.0",
+    "coverage >= 7.6.0"
+]
+
+[build-system]
+build-backend = "flit_core.buildapi"
+requires = ["flit_core >=3.2,<4"]
